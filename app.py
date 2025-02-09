@@ -2,7 +2,6 @@ import streamlit as st
 import requests
 import time
 import docx
-from docx.shared import Pt
 import os
 
 # Configuración de la API

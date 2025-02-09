@@ -4,7 +4,7 @@ import time
 from docx import Document
 from io import BytesIO
 
-def generate_chapter(api_key, topic, chapter_number):
+def generate_chapter(api_key, topic, audience, chapter_number):
     url = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -14,7 +14,7 @@ def generate_chapter(api_key, topic, chapter_number):
         "model": "qwen-plus",
         "messages": [
             {"role": "system", "content": "Eres un asistente útil que escribe en español."},
-            {"role": "user", "content": f"Escribe el capítulo {chapter_number} de un libro sobre {topic} con 900-1200 palabras en español."}
+            {"role": "user", "content": f"Escribe el capítulo {chapter_number} de un libro sobre {topic} dirigido a {audience} con 900-1200 palabras en español."}
         ]
     }
     response = requests.post(url, json=data, headers=headers)
@@ -34,11 +34,12 @@ def create_word_document(chapters, title):
 st.title("Generador de Libros en HTML")
 api_key = st.secrets["DASHSCOPE_API_KEY"]
 topic = st.text_input("Introduce el tema del libro:")
-if st.button("Generar Libro") and topic:
+audience = st.text_input("¿A quién va dirigido el libro?")
+if st.button("Generar Libro") and topic and audience:
     chapters = []
     progress_bar = st.progress(0)
     for i in range(1, 10):
-        chapter_content = generate_chapter(api_key, topic, i)
+        chapter_content = generate_chapter(api_key, topic, audience, i)
         chapters.append(chapter_content)
         st.write(f"### Capítulo {i}")
         st.write(chapter_content)

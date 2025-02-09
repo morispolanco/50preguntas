@@ -2,7 +2,6 @@ import streamlit as st
 import requests
 from docx import Document
 import time
-from streamlit_extras.progress_bar import ProgressBar
 
 # Configuración de la página
 st.set_page_config(page_title="Generador de Libros", page_icon="📚", layout="wide")
@@ -80,15 +79,19 @@ if generate_button and topic:
     else:
         # Inicializar variables
         chapters = []
-        progress_bar = ProgressBar(9, "Generando capítulos...")
+        progress_text = st.empty()  # Texto dinámico para el progreso
+        progress_bar = st.progress(0)  # Barra de progreso
 
         # Generar los capítulos
         for i in range(1, 10):
+            progress_text.text(f"Generando capítulo {i} de 9...")
             chapter_content = generate_chapter(api_key, topic, i)
             if chapter_content:
                 chapters.append(chapter_content)
-                progress_bar.progress(i)
+                progress_bar.progress(i / 9)  # Actualizar la barra de progreso
                 time.sleep(1)  # Pausa entre capítulos
+
+        progress_text.text("¡Libro generado con éxito!")
 
         # Guardar el libro en formato Word
         book_title = f"Libro sobre {topic}"

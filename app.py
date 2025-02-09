@@ -50,8 +50,8 @@ if st.button("Generar Libro") and topic and audience:
     for i in range(1, num_chapters + 1):
         chapter_content = generate_chapter(api_key, topic, audience, i)
         chapters.append(chapter_content)
-        st.write(f"### Capítulo {i}")
-        st.write(chapter_content)
+        with st.expander(f"Capítulo {i}"):
+            st.write(chapter_content)
         progress_bar.progress(i / num_chapters)
         time.sleep(2)
     

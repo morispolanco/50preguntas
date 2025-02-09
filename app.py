@@ -6,14 +6,14 @@ from time import sleep
 import os
 
 # Configuración de la página
-st.set_page_config(page_title="Generador de Libros - 50 Preguntas", page_icon="📚")
+st.set_page_config(page_title="Generador de Libros - 24 Preguntas", page_icon="📚")
 
 # Título de la aplicación
-st.title("📚 Generador de Libros: 50 Preguntas sobre [Tema]")
+st.title("📚 Generador de Libros: 24 Preguntas sobre [Tema]")
 
 # Instrucciones para el usuario
 st.write("""
-Esta aplicación genera un libro titulado **"50 preguntas sobre [tema]"**. 
+Esta aplicación genera un libro titulado **"24 preguntas sobre [tema]"**. 
 Especifica el tema y el público objetivo, y el sistema generará automáticamente 
 las preguntas y respuestas estructuradas.
 """)
@@ -32,16 +32,16 @@ if st.button("Generar Libro"):
 
         # Crear un documento Word
         doc = Document()
-        doc.add_heading(f"50 Preguntas sobre {tema}", level=1)
+        doc.add_heading(f"24 Preguntas sobre {tema}", level=1)
 
         # Barra de progreso
         progress_bar = st.progress(0)
         status_text = st.empty()
 
-        for i in range(1, 51):
+        for i in range(1, 25):  # Cambiado a 24 preguntas
             # Mostrar progreso
-            status_text.text(f"Generando capítulo {i} de 50...")
-            progress_bar.progress(i / 50)
+            status_text.text(f"Generando capítulo {i} de 24...")
+            progress_bar.progress(i / 24)
 
             # Construir el prompt para la API
             prompt = f"""
@@ -82,8 +82,15 @@ if st.button("Generar Libro"):
                 st.error(f"Error al generar el capítulo {i}. Inténtalo de nuevo.")
                 break
 
+        # Agregar el footer al documento Word
+        footer = doc.sections[0].footer
+        paragraph = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
+        run = paragraph.add_run("Copyright Hablemos bien")
+        run.font.size = Pt(10)
+        run.hyperlink = "https://hablemosbien.org"
+
         # Guardar el documento Word
-        file_name = f"50_preguntas_sobre_{tema.replace(' ', '_')}.docx"
+        file_name = f"24_preguntas_sobre_{tema.replace(' ', '_')}.docx"
         doc.save(file_name)
 
         # Permitir descargar el archivo

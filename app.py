@@ -3,6 +3,12 @@ import requests
 import time
 from docx import Document
 from io import BytesIO
+import re
+
+def clean_markdown(text):
+    """Elimina marcas de Markdown del texto."""
+    text = re.sub(r'[#*_`]', '', text)  # Eliminar caracteres especiales de Markdown
+    return text.strip()
 
 def generate_chapter(api_key, topic, audience, chapter_number):
     url = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions"
@@ -18,7 +24,8 @@ def generate_chapter(api_key, topic, audience, chapter_number):
         ]
     }
     response = requests.post(url, json=data, headers=headers)
-    return response.json().get("choices", [{}])[0].get("message", {}).get("content", "Error en la generación del capítulo.")
+    content = response.json().get("choices", [{}])[0].get("message", {}).get("content", "Error en la generación del capítulo.")
+    return clean_markdown(content)
 
 def create_word_document(chapters, title):
     doc = Document()
@@ -35,15 +42,17 @@ st.title("Generador de Libros en HTML")
 api_key = st.secrets["DASHSCOPE_API_KEY"]
 topic = st.text_input("Introduce el tema del libro:")
 audience = st.text_input("¿A quién va dirigido el libro?")
+num_chapters = st.slider("Número de capítulos", min_value=1, max_value=20, value=9)
+
 if st.button("Generar Libro") and topic and audience:
     chapters = []
     progress_bar = st.progress(0)
-    for i in range(1, 10):
+    for i in range(1, num_chapters + 1):
         chapter_content = generate_chapter(api_key, topic, audience, i)
         chapters.append(chapter_content)
         st.write(f"### Capítulo {i}")
         st.write(chapter_content)
-        progress_bar.progress(i / 9)
+        progress_bar.progress(i / num_chapters)
         time.sleep(2)
     
     word_file = create_word_document(chapters, topic)

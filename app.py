@@ -20,7 +20,7 @@ def generate_chapter(api_key, topic, audience, chapter_number):
         "model": "qwen-plus",
         "messages": [
             {"role": "system", "content": "Eres un asistente útil que escribe en español."},
-            {"role": "user", "content": f"Escribe el capítulo {chapter_number} de un libro sobre {topic} dirigido a {audience} con 900-1200 palabras en español."}
+            {"role": "user", "content": f"Escribe el capítulo {chapter_number} de un libro sobre {topic} dirigido a {audience} con 2000-2500 palabras en español."}
         ]
     }
     response = requests.post(url, json=data, headers=headers)

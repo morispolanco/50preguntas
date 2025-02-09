@@ -13,18 +13,18 @@ def generate_chapter(api_key, topic, chapter_number):
     data = {
         "model": "qwen-plus",
         "messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": f"Write chapter {chapter_number} of a book about {topic} with 900-1200 words."}
+            {"role": "system", "content": "Eres un asistente útil que escribe en español."},
+            {"role": "user", "content": f"Escribe el capítulo {chapter_number} de un libro sobre {topic} con 900-1200 palabras en español."}
         ]
     }
     response = requests.post(url, json=data, headers=headers)
-    return response.json().get("choices", [{}])[0].get("message", {}).get("content", "Chapter generation failed.")
+    return response.json().get("choices", [{}])[0].get("message", {}).get("content", "Error en la generación del capítulo.")
 
 def create_word_document(chapters, title):
     doc = Document()
     doc.add_heading(title, level=1)
     for i, chapter in enumerate(chapters, 1):
-        doc.add_heading(f"Chapter {i}", level=2)
+        doc.add_heading(f"Capítulo {i}", level=2)
         doc.add_paragraph(chapter)
     buffer = BytesIO()
     doc.save(buffer)
